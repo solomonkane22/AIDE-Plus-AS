@@ -5,7 +5,7 @@ on:
     tags:
       - v*
   pull_request:
-    branches: [ "master", "main" ] # Hem master hem main desteklenir
+    branches: [ "master", "main" ]
   workflow_dispatch: { }
 
 jobs:
@@ -26,12 +26,12 @@ jobs:
       run: chmod +x gradlew
 
     - name: Build APK for Default
-      run: ./gradlew :app:assembleDefault
+      run: ./gradlew app_flavor:default:assembleRelease
 
     - name: Get TAG_VERSION_NAME from build.gradle.kts
       id: get_version_info
       run: |
-        TAG_VERSION_NAME=$(grep "val TAG_VERSION_NAME =" build.gradle.kts || grep "val TAG_VERSION_NAME =" app/build.gradle.kts | head -n 1 | awk '{print $4}' | tr -d '"')
+        TAG_VERSION_NAME=$(grep "val TAG_VERSION_NAME =" build.gradle.kts || grep "val TAG_VERSION_NAME =" app_flavor/default/build.gradle.kts | head -n 1 | awk '{print $4}' | tr -d '"')
         echo "TAG_VERSION_NAME=${TAG_VERSION_NAME}" >> $GITHUB_ENV
         echo "Extracted Version: $TAG_VERSION_NAME"
 
@@ -40,7 +40,7 @@ jobs:
 
     - name: Rename APK for Default
       run: |
-        cp app/build/outputs/apk/default/release/app-default-release.apk build/app/outputs/apk/Default/release/AIDE-default.apk
+        cp app_flavor/default/build/outputs/apk/default/release/app-default-release.apk build/app/outputs/apk/Default/release/AIDE-default.apk || cp build/app_flavor-default/outputs/apk/default/release/app-default-release.apk build/app/outputs/apk/Default/release/AIDE-default.apk
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
