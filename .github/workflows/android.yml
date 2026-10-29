@@ -19,7 +19,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        submodules: recursive # Alt modüllerin eksiksiz klonlanması için eklendi
+        submodules: recursive # Alt modüllerin eksiksiz klonlanması için
+        fetch-depth: 0        # Eksik commit referans hatalarını (not our ref) önlemek için tüm geçmişi çeker
 
     - name: set up JDK 21
       uses: actions/setup-java@v4
